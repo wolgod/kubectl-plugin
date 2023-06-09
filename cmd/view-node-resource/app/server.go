@@ -15,6 +15,7 @@
 package app
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -101,12 +102,14 @@ func initConfig() {
 }
 
 func run(client *kubeclient.Client) {
-	nodeList, err := client.ListNode()
+	c := context.Background()
+
+	nodeList, err := client.ListNode(c)
 	if err != nil {
 		panic(err)
 	}
 
-	podList, err := client.ListPod()
+	podList, err := client.ListPod(c)
 	if err != nil {
 		panic(err)
 	}
