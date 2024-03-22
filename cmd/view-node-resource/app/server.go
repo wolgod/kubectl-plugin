@@ -155,6 +155,9 @@ func NodeResouceHandler(nodeList *v1.NodeList, podList *v1.PodList) map[string]*
 	}
 
 	for _, pod := range podList.Items {
+		if pod.Status.Phase == v1.PodSucceeded {
+			continue
+		}
 		nodeName := pod.Spec.NodeName
 		if _, existed := nodeResourceList[nodeName]; existed {
 			for _, container := range pod.Spec.Containers {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gosoon/kubectl-plugin/pkg/types"
 	"github.com/gosoon/kubectl-plugin/pkg/utils"
+	"strconv"
 
 	v1 "k8s.io/api/core/v1"
 )
@@ -16,8 +17,13 @@ func getNodeAllocatable(allocatable v1.ResourceList) (float64, float64) {
 			//cpu, _ := strconv.ParseFloat(value.String(), 64)
 			// MilliValue returns the value of ceil(q * 1000); this could overflow an int64;
 			// if that's a concern, call Value() first to verify the number is small enough.
-			cpu := float64(value.MilliValue()/1000)
-			nodeCPU = cpu
+			cpu := float64(value.MilliValue())
+			formatted := fmt.Sprintf("%.2f", cpu/1000) // 结果将为字符串 "1.23"
+			rounded, err := strconv.ParseFloat(formatted, 64)
+			if err != nil {
+				rounded = float64(0)
+			}
+			nodeCPU = rounded
 		} else if string(name) == "memory" {
 			memory, _ := utils.ConvertMemoryUnit(value.String())
 			nodeMemory += memory
