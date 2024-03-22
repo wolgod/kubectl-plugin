@@ -31,10 +31,12 @@ type NodeResourceColumnDefinitions struct {
 	PodCount int
 
 	// requests resource
-	CPURequests    string
-	MemoryRequests string
+	CPU         string
+	CPURequests string
+	CPULimits   string
 
 	// limits resource
-	CPULimits    string
-	MemoryLimits string
+	Memory         string
+	MemoryRequests string
+	MemoryLimits   string
 }

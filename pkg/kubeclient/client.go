@@ -8,6 +8,10 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
+//macos
+//const kubeconfig = "/Users/yiche/.kube/config"
+
+//linux
 const kubeconfig = "/root/.kube/config"
 
 type Client struct {
@@ -27,8 +31,10 @@ func NewClient() (*Client, error) {
 	return client, nil
 }
 
-func (client *Client) ListNode(ctx context.Context) (*v1.NodeList, error) {
-	nodeList, err := client.Clientset.CoreV1().Nodes().List(ctx, metav1.ListOptions{})
+func (client *Client) ListNode(ctx context.Context, labels string) (*v1.NodeList, error) {
+	nodeList, err := client.Clientset.CoreV1().Nodes().List(ctx, metav1.ListOptions{
+		LabelSelector: labels,
+	})
 	if err != nil {
 		return nil, err
 	}

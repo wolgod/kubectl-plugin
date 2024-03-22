@@ -31,6 +31,7 @@ import (
 )
 
 var cfgFile string
+var labels string
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -68,7 +69,9 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.view-node-resource.yaml)")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.view-node-resource)")
+
+	RootCmd.PersistentFlags().StringVar(&labels, "labels", "", "disktype=ssd,cpu=high")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -104,7 +107,7 @@ func initConfig() {
 func run(client *kubeclient.Client) {
 	c := context.Background()
 
-	nodeList, err := client.ListNode(c)
+	nodeList, err := client.ListNode(c, labels)
 	if err != nil {
 		panic(err)
 	}
@@ -125,9 +128,11 @@ func printNodeResourceColumnDefinitions(nodeResourceList map[string]*types.NodeR
 			types.NodeResourceColumnDefinitions{
 				Name:           node.Name,
 				PodCount:       node.PodCount,
+				CPU:            fmt.Sprintf("%.2f", node.CPU),
 				CPURequests:    pickNodeCPURequests(node),
-				MemoryRequests: pickNodeMemoryRequests(node),
 				CPULimits:      pickNodeCPULimits(node),
+				Memory:         fmt.Sprintf("%.2f", node.Memory),
+				MemoryRequests: pickNodeMemoryRequests(node),
 				MemoryLimits:   pickNodeMemoryLimits(node),
 			})
 	}
@@ -184,11 +189,11 @@ func NodeResouceHandler(nodeList *v1.NodeList, podList *v1.PodList) map[string]*
 		nodeResourceList[nodeName].CPURequestsUsage = fmt.Sprintf("%.2f%%",
 			nodeResourceList[nodeName].CPURequests/nodeResourceList[nodeName].CPU*100)
 
-		nodeResourceList[nodeName].MemoryRequestsUsage = fmt.Sprintf("%.2f%%",
-			nodeResourceList[nodeName].MemoryRequests/nodeResourceList[nodeName].Memory*100)
-
 		nodeResourceList[nodeName].CPULimitsUsage = fmt.Sprintf("%.2f%%",
 			nodeResourceList[nodeName].CPULimits/nodeResourceList[nodeName].CPU*100)
+
+		nodeResourceList[nodeName].MemoryRequestsUsage = fmt.Sprintf("%.2f%%",
+			nodeResourceList[nodeName].MemoryRequests/nodeResourceList[nodeName].Memory*100)
 
 		nodeResourceList[nodeName].MemoryLimitsUsage = fmt.Sprintf("%.2f%%",
 			nodeResourceList[nodeName].MemoryLimits/nodeResourceList[nodeName].Memory*100)

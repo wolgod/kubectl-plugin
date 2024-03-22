@@ -2,9 +2,9 @@
 
 build :
 ```
-$ CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/kubectl-node-resource cmd/view-node-resource/main.go
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/kubectl-node-resource cmd/view-node-resource/main.go
 
-$ GO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/kubectl-node-taints cmd/view-node-taints/main.go
+GO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/kubectl-node-taints cmd/view-node-taints/main.go
 ```
 
 start :
