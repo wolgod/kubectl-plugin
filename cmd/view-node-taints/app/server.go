@@ -97,7 +97,7 @@ func initConfig() {
 func run(client *kubeclient.Client) {
 
 	ctx := context.Background()
-	nodeList, err := client.ListNode(ctx)
+	nodeList, err := client.ListNode(ctx, "")
 	if err != nil {
 		panic(err)
 	}
