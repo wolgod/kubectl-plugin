@@ -1,5 +1,7 @@
 package types
 
+import "sort"
+
 // NodeResourceList xxx
 type NodeResourceList struct {
 	Name     string
@@ -39,4 +41,14 @@ type NodeResourceColumnDefinitions struct {
 	Memory         string
 	MemoryRequests string
 	MemoryLimits   string
+}
+type ByName []NodeResourceColumnDefinitions
+
+func (a ByName) Len() int           { return len(a) }
+func (a ByName) Less(i, j int) bool { return a[i].Name < a[j].Name }
+func (a ByName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+
+// SortNodes sorts nodes by name.
+func SortNodes(nodes []NodeResourceColumnDefinitions) {
+	sort.Sort(ByName(nodes))
 }

@@ -17,17 +17,15 @@ package app
 import (
 	"context"
 	"fmt"
-	"os"
-
 	"github.com/gosoon/kubectl-plugin/pkg/kubeclient"
 	"github.com/gosoon/kubectl-plugin/pkg/printers"
 	"github.com/gosoon/kubectl-plugin/pkg/types"
 	"github.com/gosoon/kubectl-plugin/pkg/utils"
-
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"k8s.io/api/core/v1"
+	"os"
 )
 
 var cfgFile string
@@ -136,6 +134,7 @@ func printNodeResourceColumnDefinitions(nodeResourceList map[string]*types.NodeR
 				MemoryLimits:   pickNodeMemoryLimits(node),
 			})
 	}
+	types.SortNodes(nodeResourceColumnDefinitions)
 
 	printers.Output(nodeResourceColumnDefinitions)
 }
