@@ -5,6 +5,7 @@ import "sort"
 // NodeResourceList xxx
 type NodeResourceList struct {
 	Name     string
+	Status   string
 	PodCount int
 
 	CPU    float64
@@ -30,6 +31,7 @@ type NodeResourceList struct {
 // NodeResourceColumnDefinitions xxx
 type NodeResourceColumnDefinitions struct {
 	Name     string
+	Status   string
 	PodCount int
 
 	// requests resource

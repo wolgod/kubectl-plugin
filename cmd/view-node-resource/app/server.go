@@ -68,7 +68,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.view-node-resource)")
-
+	RootCmd.PersistentFlags().StringVar(&labels, "l", "", "disktype=ssd,cpu=high")
 	RootCmd.PersistentFlags().StringVar(&labels, "labels", "", "disktype=ssd,cpu=high")
 
 	// Cobra also supports local flags, which will only run
@@ -125,6 +125,7 @@ func printNodeResourceColumnDefinitions(nodeResourceList map[string]*types.NodeR
 		nodeResourceColumnDefinitions = append(nodeResourceColumnDefinitions,
 			types.NodeResourceColumnDefinitions{
 				Name:           node.Name,
+				Status:         node.Status,
 				PodCount:       node.PodCount,
 				CPU:            fmt.Sprintf("%.2f", node.CPU),
 				CPURequests:    pickNodeCPURequests(node),
@@ -145,7 +146,15 @@ func NodeResouceHandler(nodeList *v1.NodeList, podList *v1.PodList) map[string]*
 	for _, node := range nodeList.Items {
 		if _, existed := nodeResourceList[node.Name]; !existed {
 			nodeCPU, nodeMemory := getNodeAllocatable(node.Status.Allocatable)
+			status := "NotReady"
+			if IsNodeReady(node) {
+				status = "Ready"
+			}
+			if node.Spec.Unschedulable {
+				status = status + ",SchedulingDisabled"
+			}
 			nodeResourceList[node.Name] = &types.NodeResourceList{
+				Status: status,
 				Name:   node.Name,
 				CPU:    nodeCPU,
 				Memory: nodeMemory,

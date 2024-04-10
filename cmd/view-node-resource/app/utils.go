@@ -47,3 +47,14 @@ func pickNodeCPULimits(node *types.NodeResourceList) string {
 func pickNodeMemoryLimits(node *types.NodeResourceList) string {
 	return fmt.Sprintf("%.1f (%v)", node.MemoryLimits, node.MemoryLimitsUsage)
 }
+func IsNodeReady(node v1.Node) bool {
+
+	for _, condition := range node.Status.Conditions {
+		if condition.Type == v1.NodeReady {
+			if condition.Status == v1.ConditionTrue {
+				return true
+			}
+		}
+	}
+	return false
+}
