@@ -110,10 +110,11 @@ func run(client *kubeclient.Client) {
 		panic(err)
 	}
 
-	podList, err := client.ListPod(c)
+	podList, err := client.ListPodPage(c)
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println(fmt.Sprintf("总pod数%d", len(podList.Items)))
 	nodeResourceList := NodeResouceHandler(nodeList, podList)
 
 	printNodeResourceColumnDefinitions(nodeResourceList)

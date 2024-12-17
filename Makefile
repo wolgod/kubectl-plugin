@@ -11,7 +11,7 @@ plugin:
 	GO111MODULE=on CGO_ENABLED=0 go build -o kubectl-debug cmd/plugin/main.go
 
 view-node-resource:
-	$(GO) build -o kubectl-view-node-resource cmd/view-node-resource/main.go
+	$(GO) build -o kubectl-node-resource cmd/view-node-resource/main.go
 
 view-node-taints:
 	$(GO) build -o kubectl-view-node-taints cmd/view-node-taints/main.go
